@@ -1,0 +1,138 @@
+# ==========================================
+# NETFLIX CONTENT VISUALIZATION PROJECT
+# ==========================================
+
+# Import Libraries
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+from google.colab import files
+
+# Upload Dataset
+uploaded = files.upload()
+
+# Load Dataset
+df = pd.read_csv("netflix.titles.csv")
+
+# ==========================================
+# DATA CLEANING
+# ==========================================
+
+print("Dataset Shape:", df.shape)
+
+# Check Missing Values
+print("\nMissing Values:")
+print(df.isnull().sum())
+
+# Fill Missing Values
+df["director"] = df["director"].fillna("Unknown")
+df["cast"] = df["cast"].fillna("Unknown")
+df["country"] = df["country"].fillna("Unknown")
+df["rating"] = df["rating"].fillna("Not Rated")
+
+# Remove Duplicate Rows
+df.drop_duplicates(inplace=True)
+
+print("\nDataset Shape After Cleaning:", df.shape)
+
+# ==========================================
+# BASIC ANALYSIS
+# ==========================================
+
+print("\nMovies vs TV Shows:")
+print(df["type"].value_counts())
+
+print("\nTop 10 Ratings:")
+print(df["rating"].value_counts().head(10))
+
+print("\nTop 10 Countries:")
+print(df["country"].value_counts().head(10))
+
+# ==========================================
+# VISUALIZATION 1
+# MOVIES VS TV SHOWS
+# ==========================================
+
+plt.figure(figsize=(6,4))
+sns.countplot(x='type', data=df)
+plt.title("Movies vs TV Shows on Netflix")
+plt.xlabel("Content Type")
+plt.ylabel("Count")
+plt.show()
+
+# ==========================================
+# VISUALIZATION 2
+# TOP CONTENT RATINGS
+# ==========================================
+
+plt.figure(figsize=(8,5))
+df["rating"].value_counts().head(10).plot(kind="bar")
+plt.title("Top 10 Content Ratings")
+plt.xlabel("Rating")
+plt.ylabel("Count")
+plt.show()
+
+# ==========================================
+# VISUALIZATION 3
+# CONTENT ADDED OVER YEARS
+# ==========================================
+
+df["date_added"] = pd.to_datetime(df["date_added"], errors="coerce")
+df["year_added"] = df["date_added"].dt.year
+
+plt.figure(figsize=(10,5))
+df["year_added"].value_counts().sort_index().plot(kind="line", marker="o")
+plt.title("Content Added to Netflix Over Years")
+plt.xlabel("Year")
+plt.ylabel("Number of Titles")
+plt.grid(True)
+plt.show()
+
+# ==========================================
+# VISUALIZATION 4
+# TOP 10 COUNTRIES
+# ==========================================
+
+plt.figure(figsize=(10,5))
+df["country"].value_counts().head(10).plot(kind="bar")
+plt.title("Top 10 Countries Producing Netflix Content")
+plt.xlabel("Country")
+plt.ylabel("Count")
+plt.show()
+
+# ==========================================
+# VISUALIZATION 5
+# RELEASE YEAR DISTRIBUTION
+# ==========================================
+
+plt.figure(figsize=(12,5))
+df["release_year"].value_counts().sort_index().tail(30).plot(kind="line")
+plt.title("Content Release Trend")
+plt.xlabel("Release Year")
+plt.ylabel("Number of Titles")
+plt.grid(True)
+plt.show()
+
+# ==========================================
+# VISUALIZATION 6
+# PIE CHART OF CONTENT TYPES
+# ==========================================
+
+plt.figure(figsize=(6,6))
+df["type"].value_counts().plot(
+    kind="pie",
+    autopct="%1.1f%%"
+)
+plt.title("Distribution of Movies and TV Shows")
+plt.ylabel("")
+plt.show()
+
+# ==========================================
+# SUMMARY
+# ==========================================
+
+print("\nProject Completed Successfully!")
+print("Data Cleaning ✔")
+print("Visualization ✔")
+print("Analysis ✔")
+print("Dashboard-style Charts ✔")
